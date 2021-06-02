@@ -1,6 +1,11 @@
-// require('dotenv/config');
-console.log(process.env);
+// // require('dotenv/config');
+// console.log(process.env);
 
+//TEMPLATES & TEMPLATE ENGINE
+
+
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
 const Joi = require("joi");
 const express = require('express');
 const { func } = require("joi");
@@ -8,6 +13,9 @@ var cors = require('cors');
 const helmet = require("helmet");
 var morgan = require('morgan');
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views','./views');
 
 
 console.log(`NODE_ENV : ${process.env.NODE_ENV}`);
@@ -30,9 +38,11 @@ app.use(express.static('public'));
 
 if (app.get('env') === "development") {
   app.use(morgan('tiny'));
-  console.log("Morgan Enabled.....");
+  startupDebugger("Morgan Enabled.....");
 }
 
+//Here we have database code
+dbDebugger("Database has started.......");
 
 
 app.use(function(req,res,next){
@@ -59,7 +69,8 @@ const courses = [
 
 
 app.get('/api/courses',(req,res) => {
-  res.send(courses);
+  // res.send(courses);
+  res.render('index',{title:"Jeeva's App", message:"Mayank is dancing in garden at 3:00 o'clock!" })
 })
 
 app.get('/api/courses/:id',(req,res) => {

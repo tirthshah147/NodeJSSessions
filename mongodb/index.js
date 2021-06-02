@@ -15,7 +15,6 @@ const Course = mongoose.model('Course',courseSchema);
 
 async function createCourse(){
 
-
     const course = new Course({
       name:"ExpressJS",
       author:"Gowtham",
@@ -25,9 +24,6 @@ async function createCourse(){
 
     const result = await course.save();
     console.log(result);
-
-  
-  
 }
 
 createCourse();
