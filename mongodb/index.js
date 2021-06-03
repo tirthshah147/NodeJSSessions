@@ -1,3 +1,4 @@
+const { get } = require('https');
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost/coursesDB',{useNewUrlParser:true, useUnifiedTopology:true})
@@ -6,27 +7,69 @@ mongoose.connect('mongodb://localhost/coursesDB',{useNewUrlParser:true, useUnifi
 
 
 const courseSchema = mongoose.Schema({
-  name: String,
+  name: {
+    type:String, 
+    required:true,
+    minlength:5,
+    maxlength:255,
+    // match:/pattern/
+  },
   author:String,
-  tags:[String],
-  isPublished:Boolean,
-  price:Number
+  tags:{
+    type:Array,
+    validate:{
+      validator:function(v){   // v->["Nodejs", "Web development", "Backend"]
+        return v && v.length > 0;
+      },
+      message:"A course should have atleast one tag!"
+    }
+  },
+  category:{
+    type:String,
+    enum:['web','desktop','android'],
+    lowercase:true,
+    // uppercase:true,
+    trim:true
+  },
+  isPublished:{type:Boolean, default:false},
+  price:{
+    type:Number,
+    required:function(){return this.isPublished},
+    get: v => Math.round(v),
+    set: v => Math.round(v)
+
+  }
 }, {timestamps : true})
 
 const Course = mongoose.model('Course',courseSchema);
 
 async function createCourse(){
     const course = new Course({
-      name:"NodeJS",
-      author:"Mayank",
-      tags:["Nodejs", "Web development", "Backend"],
+      name:"ExpressJS Lectures",
+      author:"Manjeema",
+      category:"Web",
+      tags:['websites'],
       isPublished:true,
-      price:350
+      price:13.8
     });
 
-    const result = await course.save();
-    console.log(result);
+    try{
+      const result = await course.save();
+      console.log(result);
+    }catch(error){
+      for (field in error.errors){
+        console.log("Error",error.errors[field].message);
+      }
+    }
 }
+
+
+async function getCourseById(id){
+  const result = await Course.findById(id);
+  console.log(result.price);
+}
+
+getCourseById('60b908e289289535c467c16e');
 
 //Conditional Query operators
 
@@ -59,7 +102,7 @@ async function getCourse(){
   // .find({_id : id})
   // .or([ {author:"Jeeva"}, {isPublished:false}])
   // .and([{},{}])
-  // .skip((pageNumber - 1) * pageSize)
+  .skip((pageNumber - 1) * pageSize)
   .find()
   .limit(10)
   .sort({name:1})
@@ -138,6 +181,6 @@ async function removeCourse(id){
   console.log(result);
 }
 
-removeCourse('60b7bcb2a2843749c0d54ad9');
+// removeCourse('60b7bcb2a2843749c0d54ad9');
 
 
