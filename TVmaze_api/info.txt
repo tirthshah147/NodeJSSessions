@@ -1,0 +1,4 @@
+genres - name
+movie - name, genre, cast, price
+customer - name, website
+rental - customer, movie

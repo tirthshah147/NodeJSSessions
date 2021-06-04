@@ -1,24 +1,10 @@
 const express = require('express');
 const Joi = require("joi");
+const {Course, validateCourse} = require('../models/course');
 const router = express.Router();
-const mongoose = require('mongoose');
+const {getCourse} = require('../controller/course');
 
-const courseSchema = mongoose.Schema({
-  name:{
-    type:String,
-    required:true,
-    minlength:5,
-    maxlength:255
-  }
-})
-
-const Course = mongoose.model('courses',courseSchema);
-
-
-router.get('/',async(req,res) => {
-  const courses = await Course.find();
-  res.send(courses);
-})
+router.get('/',getCourse());
 
 router.get('/:id',async(req,res) => {
   const course = Course.findById(req.params.id);
@@ -70,17 +56,6 @@ router.delete('/:id',async(req,res) => {
 
   res.send(course);
 })
-
-
-function validateCourse(course){
-  const schema = Joi.object({
-    name : Joi.string().min(3).required()
-  })
-
-  return schema.validate(course);
-}
-
-
 
 
 module.exports = router;
