@@ -4,7 +4,7 @@ const {Course, validateCourse} = require('../models/course');
 const router = express.Router();
 const {getCourse} = require('../controller/course');
 
-router.get('/',getCourse());
+router.get('/',getCourse);
 
 router.get('/:id',async(req,res) => {
   const course = Course.findById(req.params.id);
