@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 
+
 router.get('/',async(req,res) => {
   const movies = Movie.find().sort("name");
   res.send(movies);
@@ -25,6 +26,7 @@ router.post('/',async(req,res)=> {
     numberInStock:req.body.numberInStock,
     dailyRentalRate:req.body.dailyRentalRate
   })
+
 
   movie = await movie.save();
   res.send(movie);
