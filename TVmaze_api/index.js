@@ -8,7 +8,7 @@ const movies = require("./routes/movies");
 const app =express()
 
 //connecting database using mongoose -> tvmaze
-mongoose.connect('mongodb://localhost/tvmaze',{useNewUrlParser=true, useUnifiedTopology:true
+mongoose.connect('mongodb://localhost/tvmaze',{useNewUrlParser:true, useUnifiedTopology:true
 })
 .then(() => console.log("DB connected..."))
 .catch((e) => console.log("error while connecting"));
@@ -20,7 +20,7 @@ app.use(express.json());
 //routes
 
 app.use('/api/genres',genres);
-app.use('/api/customers',customers);
+// app.use('/api/customers',customers);
 app.use('/api/movies',movies);
 // app.use('/api/rentals',rentals);
 
