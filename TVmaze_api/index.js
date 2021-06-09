@@ -4,8 +4,8 @@ const genres = require("./routes/genres");
 const movies = require("./routes/movies");
 const customers = require("./routes/customers");
 const rentals = require("./routes/rentals");
-const { Customer } = require("./models/customers");
-const { Rental } = require("./models/rentals");
+const users = require("./routes/users");
+
 
 
 //creating app
@@ -27,6 +27,7 @@ app.use('/api/genres',genres);
 app.use('/api/customers',customers);
 app.use('/api/movies',movies);
 app.use('/api/rentals',rentals);
+app.use('/api/users',users);
 
 //connecting port 3000
 
