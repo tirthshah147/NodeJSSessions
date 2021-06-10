@@ -1,9 +1,11 @@
+const jwt = require('jsonwebtoken');
 const _ = require("lodash");
 const bcrypt = require('bcrypt');
 const {User, validate} = require('../models/users');
 const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
+require('dotenv/config');
 
 
 router.get('/', async(req,res) => {
@@ -30,8 +32,11 @@ router.post('/',async(req,res) => {
   //   email: user.email
   // });
 
-  res.send(_.pick(user,['name','email']));
+  const token = user.generateAuthToken();
+  console.log(token);
 
+
+  res.header('x-auth-token',token).send(_.pick(user,['name','email']));
   console.log(user);
 })
 
