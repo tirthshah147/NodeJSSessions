@@ -1,8 +1,12 @@
 const {Genre, validate} = require('../models/genres');
 const auth = require('../middlewares/auth');
+const admin = require('../middlewares/admin');
+// const asyncMiddleware = require('../middlewares/async');
 const mongoose = require("mongoose");
 const express = require("express");
+const { nextTick } = require('process');
 const router = express.Router();
+
 
 
 //Frontend code
@@ -17,33 +21,53 @@ const router = express.Router();
 //   alert(resp.message);
 // }
 
-router.get('/', async(req,res) => {
-  // try{
-    const genres = await Genre.find().sort('name');
-    // let data = {
-    //   genres,
-    //   status:200,
-    //   message:"All Genres are selected"
-    // }
-    // res.status(200).send(data);
-    res.send(genres);
-  // }
+router.get('/', async(req,res,next) => {
+  throw new Error("Error occured!");
+  const genres = await Genre.find().sort('name');
+  res.send(genres);
+});
+
+// router.get('/', asyncMiddleware(async(req,res,next) => {
+//   throw new Error("Error occured!");
+//   const genres = await Genre.find().sort('name');
+//   res.send(genres);
+// }));
+
+// router.get('/', async(req,res,next) => {
+
+//   try{
+//     throw new Error("Error occured!");
+//     const genres = await Genre.find().sort('name');
+//     res.send(genres);
+//   }catch(ex){
+//     next(ex);
+//   }
+    
+//     // let data = {
+//     //   genres,
+//     //   status:200,
+//     //   message:"All Genres are selected"
+//     // }
+//     // res.status(200).send(data);
+    
+//   // }
   
-  // catch(error){
-  //   let data = {
-  //     status:404,
-  //     message:"Error while getting genres!"
-  //   }
-  //   res.status(404).send(data);
-  // }
+//   // catch(error){
+//   //   let data = {
+//   //     status:404,
+//   //     message:"Error while getting genres!"
+//   //   }
+//   //   res.status(404).send(data);
+//   // }
   
-})
+// })
 
 
-router.post('/',auth,async(req,res) => {
+router.post('/',[auth,admin],async(req,res) => {
   console.log(req.user);
   const {error} = validate(req.body);
   if(error) return res.status(400).send(error.details[0].message);
+
 
   let genre = new Genre({name:req.body.name});
   genre = await genre.save();
@@ -79,7 +103,6 @@ router.get('/:id',async(req,res) => {
   if(!genre) return res.status(404).send("The data for Id you need is not valid!");
   res.send(genre);
 })
-
 
 module.exports = router;
 
